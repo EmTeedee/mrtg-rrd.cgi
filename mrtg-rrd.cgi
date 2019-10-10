@@ -552,15 +552,37 @@ sub common_args($$$)
 		'MGRID#000000', '-c', 'FRAME#000000',
 		'-g', '-n',  $defaultfont;
 
-	# force graphs matching temp to start at 25
-	# force graphs matching fan to start at 1000
-	# force all other graphs to start at 0
-	if ($name =~ m/.*temp.*/) {
-		push @args, '-l', '25', '-r';
-	} elsif ($name =~ m/.*fan.*/) {
-		push @args, '-l', '1000', '-r';
+	my $rigid = 0;
+
+	if (defined $target->{graphmin}) {
+		if ($target->{graphmin} eq 'guess') {
+			if ($name =~ m/.*temp.*/) {
+				# force graphs matching temp to start at 25
+				$target->{graphmin} = 25;
+				$rigid = 1;
+			} elsif ($name =~ m/.*fan.*/) {
+				# force graphs matching fan to start at 1000
+				$target->{graphmin} = 1000;
+				$rigid = 1;
+			} else {
+				# force all other graphs to start at 0
+				$target->{graphmin} = 0;
+			}
+		} else {
+			$rigid = 1;
+		}
 	} else {
-		push @args, '-l', '0';
+		$target->{graphmin} = 0
+	}
+	push @args, '-l', $target->{graphmin};
+
+	if (defined $target->{graphmax}) {
+		$rigid = 1;
+		push @args, '-u', $target->{graphmax};
+	}
+
+	if ($rigid) {
+		push @args, '-r';
 	}
 
 	$target->{background} = '#f5f5f5'

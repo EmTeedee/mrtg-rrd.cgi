@@ -1,5 +1,11 @@
 $Id: ChangeLog,v 1.28 2003/08/18 15:58:57 kas Exp $
 
+* Thu Oct 10 15:20:00 CEST 2019
+	Add graphmin/graphmax to define lower and upper bounds for a target.
+	Autoscale is disabled if these are used.
+	If 'guess' is used for graphmin, "temp" targets will have a lower bound
+	of 25, while "fan" targets will use a lower bound of 1000.
+
 ==================================================================
 RELEASE 0.7
 
